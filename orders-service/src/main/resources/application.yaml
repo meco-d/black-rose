@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: orders-service
+
+  datasource:
+    # JDBC URL format: jdbc:postgresql://<host>:<port>/<database_name>
+    url: jdbc:postgresql://localhost:5432/orders
+    username: admin
+    password: admin0
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      # Liquibase owns the schema; this only checks entities match it.
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080
