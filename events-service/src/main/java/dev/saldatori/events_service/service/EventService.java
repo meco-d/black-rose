@@ -1,8 +1,8 @@
-package dev.saldatori.orders_service.service;
+package dev.saldatori.events_service.service;
 
-import dev.saldatori.orders_service.exception.EventNotFoundException;
-import dev.saldatori.orders_service.model.entity.Event;
-import dev.saldatori.orders_service.repository.EventRepository;
+import dev.saldatori.events_service.exception.EventNotFoundException;
+import dev.saldatori.events_service.model.entity.Event;
+import dev.saldatori.events_service.repository.EventRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

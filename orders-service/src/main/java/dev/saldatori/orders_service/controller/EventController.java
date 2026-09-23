@@ -1,13 +1,11 @@
 package dev.saldatori.orders_service.controller;
 
-import dev.saldatori.orders_service.model.dto.EventDetailResponse;
-import dev.saldatori.orders_service.model.dto.EventRequest;
-import dev.saldatori.orders_service.model.dto.EventResponse;
+import dev.saldatori.orders_service.client.EventClient;
+import dev.saldatori.orders_service.client.RemoteEvent;
+import dev.saldatori.orders_service.model.dto.EventAvailabilityResponse;
 import dev.saldatori.orders_service.model.dto.OrderRequest;
 import dev.saldatori.orders_service.model.dto.OrderResponse;
-import dev.saldatori.orders_service.model.entity.Event;
 import dev.saldatori.orders_service.model.entity.Order;
-import dev.saldatori.orders_service.service.EventService;
 import dev.saldatori.orders_service.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,40 +17,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/events")
 public class EventController {
-    private final EventService eventService;
+    private final EventClient eventClient;
     private final OrderService orderService;
 
-    public EventController(EventService eventService, OrderService orderService) {
-        this.eventService = eventService;
+    public EventController(EventClient eventClient, OrderService orderService) {
+        this.eventClient = eventClient;
         this.orderService = orderService;
     }
 
-    @PostMapping
-    public ResponseEntity<EventResponse> create(@Valid @RequestBody EventRequest request) {
-        Event event = new Event();
-        event.setName(request.name());
-        event.setStartsAt(request.startsAt());
-        event.setCapacity(request.capacity());
-
-        Event saved = eventService.save(event);
-        return ResponseEntity.status(HttpStatus.CREATED).body(EventResponse.from(saved));
-    }
-
-    @GetMapping
-    public List<EventResponse> findAll() {
-        return eventService.findAll().stream().map(EventResponse::from).toList();
-    }
-
-    @GetMapping("/{id}")
-    public EventDetailResponse findById(@PathVariable Long id) {
-        Event event = eventService.getById(id);
+    @GetMapping("/{id}/availability")
+    public EventAvailabilityResponse getAvailability(@PathVariable Long id) {
+        RemoteEvent event = eventClient.getEvent(id);
         int ticketsRemaining = orderService.getTicketsRemaining(event);
-        return EventDetailResponse.from(event, ticketsRemaining);
+        return EventAvailabilityResponse.from(event, ticketsRemaining);
     }
 
     @PostMapping("/{id}/orders")

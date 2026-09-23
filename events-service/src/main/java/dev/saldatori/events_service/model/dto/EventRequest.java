@@ -1,4 +1,4 @@
-package dev.saldatori.orders_service.model.dto;
+package dev.saldatori.events_service.model.dto;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;

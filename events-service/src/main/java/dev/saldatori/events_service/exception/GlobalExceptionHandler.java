@@ -1,4 +1,4 @@
-package dev.saldatori.orders_service.exception;
+package dev.saldatori.events_service.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,19 +9,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({EventNotFoundException.class, OrderNotFoundException.class})
-    public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException ex) {
+    @ExceptionHandler(EventNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(EventNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler({InsufficientCapacityException.class, InvalidOrderStateException.class})
-    public ResponseEntity<ErrorResponse> handleConflict(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler(EventServiceUnavailableException.class)
-    public ResponseEntity<ErrorResponse> handleServiceUnavailable(EventServiceUnavailableException ex) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

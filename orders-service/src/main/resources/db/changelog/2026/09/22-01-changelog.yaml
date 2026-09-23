@@ -1,35 +1,5 @@
 databaseChangeLog:
   - changeSet:
-      id: 001-create-events
-      author: saldatori
-      changes:
-        - createTable:
-            tableName: events
-            columns:
-              - column:
-                  name: id
-                  type: BIGINT
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: name
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: starts_at
-                  type: TIMESTAMP WITH TIME ZONE
-                  constraints:
-                    nullable: false
-              - column:
-                  name: capacity
-                  type: INT
-                  constraints:
-                    nullable: false
-
-  - changeSet:
       id: 002-create-orders
       author: saldatori
       changes:
@@ -48,8 +18,6 @@ databaseChangeLog:
                   type: BIGINT
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_orders_event
-                    references: events(id)
               - column:
                   name: customer_email
                   type: VARCHAR(255)

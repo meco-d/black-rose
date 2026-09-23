@@ -1,6 +1,6 @@
-package dev.saldatori.orders_service.model.dto;
+package dev.saldatori.events_service.model.dto;
 
-import dev.saldatori.orders_service.model.entity.Event;
+import dev.saldatori.events_service.model.entity.Event;
 
 import java.time.OffsetDateTime;
 

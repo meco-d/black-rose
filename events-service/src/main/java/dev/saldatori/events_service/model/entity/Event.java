@@ -1,4 +1,4 @@
-package dev.saldatori.orders_service.model.entity;
+package dev.saldatori.events_service.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,10 +15,10 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="starts_at")
+    @Column(name = "starts_at")
     private OffsetDateTime startsAt;
 
     @Column(name = "capacity")

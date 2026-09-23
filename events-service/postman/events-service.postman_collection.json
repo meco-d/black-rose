@@ -1,0 +1,93 @@
+{
+  "info": {
+    "name": "events-service",
+    "description": "Smoke-test collection for events-service (Stage 2), standalone.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8081", "type": "string" },
+    { "key": "eventId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Create event",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Denim Doves - Live\",\n  \"startsAt\": \"2026-12-01T20:00:00+01:00\",\n  \"capacity\": 5\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/events", "host": ["{{baseUrl}}"], "path": ["events"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 201', () => pm.response.to.have.status(201));",
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('eventId', body.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List events",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/events", "host": ["{{baseUrl}}"], "path": ["events"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('status is 200', () => pm.response.to.have.status(200));"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get event by id",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/events/{{eventId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["events", "{{eventId}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', () => pm.response.to.have.status(200));",
+              "pm.test('does not carry order data', () => pm.expect(pm.response.json()).to.not.have.property('ticketsRemaining'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get non-existent event (expect 404)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/events/999999", "host": ["{{baseUrl}}"], "path": ["events", "999999"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('status is 404', () => pm.response.to.have.status(404));"]
+          }
+        }
+      ]
+    }
+  ]
+}
