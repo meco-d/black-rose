@@ -42,9 +42,9 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": "{{baseUrl}}/events/{{eventId}}/availability",
+          "raw": "{{baseUrl}}/orders/availability/{{eventId}}",
           "host": ["{{baseUrl}}"],
-          "path": ["events", "{{eventId}}", "availability"]
+          "path": ["orders", "availability", "{{eventId}}"]
         }
       },
       "event": [
@@ -67,13 +67,9 @@
         "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"customerEmail\": \"fan@example.com\",\n  \"quantity\": 2\n}"
+          "raw": "{\n  \"eventId\": {{eventId}},\n  \"customerEmail\": \"fan@example.com\",\n  \"quantity\": 2\n}"
         },
-        "url": {
-          "raw": "{{baseUrl}}/events/{{eventId}}/orders",
-          "host": ["{{baseUrl}}"],
-          "path": ["events", "{{eventId}}", "orders"]
-        }
+        "url": { "raw": "{{baseUrl}}/orders", "host": ["{{baseUrl}}"], "path": ["orders"] }
       },
       "event": [
         {
@@ -96,13 +92,9 @@
         "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"customerEmail\": \"late-fan@example.com\",\n  \"quantity\": 1\n}"
+          "raw": "{\n  \"eventId\": {{eventId}},\n  \"customerEmail\": \"late-fan@example.com\",\n  \"quantity\": 1\n}"
         },
-        "url": {
-          "raw": "{{baseUrl}}/events/{{eventId}}/orders",
-          "host": ["{{baseUrl}}"],
-          "path": ["events", "{{eventId}}", "orders"]
-        }
+        "url": { "raw": "{{baseUrl}}/orders", "host": ["{{baseUrl}}"], "path": ["orders"] }
       },
       "event": [
         {
@@ -193,13 +185,9 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerEmail\": \"resilience@example.com\",\n  \"quantity\": 1\n}"
+              "raw": "{\n  \"eventId\": {{eventId}},\n  \"customerEmail\": \"resilience@example.com\",\n  \"quantity\": 1\n}"
             },
-            "url": {
-              "raw": "{{baseUrl}}/events/{{eventId}}/orders",
-              "host": ["{{baseUrl}}"],
-              "path": ["events", "{{eventId}}", "orders"]
-            }
+            "url": { "raw": "{{baseUrl}}/orders", "host": ["{{baseUrl}}"], "path": ["orders"] }
           },
           "event": [
             {
@@ -223,13 +211,9 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerEmail\": \"late-fan@example.com\",\n  \"quantity\": 1\n}"
+              "raw": "{\n  \"eventId\": {{eventId}},\n  \"customerEmail\": \"late-fan@example.com\",\n  \"quantity\": 1\n}"
             },
-            "url": {
-              "raw": "{{baseUrl}}/events/{{eventId}}/orders",
-              "host": ["{{baseUrl}}"],
-              "path": ["events", "{{eventId}}", "orders"]
-            }
+            "url": { "raw": "{{baseUrl}}/orders", "host": ["{{baseUrl}}"], "path": ["orders"] }
           },
           "event": [
             {
@@ -237,7 +221,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "console.log('--- POST /events/{id}/orders while events-service is down ---');",
+                  "console.log('--- POST /orders while events-service is down ---');",
                   "console.log('Status:', pm.response.code, pm.response.status);",
                   "console.log('Response time (ms):', pm.response.responseTime);",
                   "console.log('Body:', pm.response.text());"
@@ -251,9 +235,9 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/events/{{eventId}}/availability",
+              "raw": "{{baseUrl}}/orders/availability/{{eventId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["events", "{{eventId}}", "availability"]
+              "path": ["orders", "availability", "{{eventId}}"]
             }
           },
           "event": [
@@ -262,7 +246,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "console.log('--- GET /events/{id}/availability while events-service is down ---');",
+                  "console.log('--- GET /orders/availability/{eventId} while events-service is down ---');",
                   "console.log('Status:', pm.response.code, pm.response.status);",
                   "console.log('Response time (ms):', pm.response.responseTime);",
                   "console.log('Body:', pm.response.text());"

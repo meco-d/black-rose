@@ -1,4 +1,28 @@
 services:
+  traefik:
+    image: traefik:latest
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.file.watch=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8090:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik-logs:/var/log/traefik"
+      - "./certs:/certs:ro"
+      - "./traefik-dynamic:/etc/traefik/dynamic:ro"
+    networks:
+      - microservice-network
+
   orders-db:
     image: postgres:17
     environment:
@@ -15,6 +39,8 @@ services:
       timeout: 3s
       retries: 5
       start_period: 10s
+    networks:
+      - microservice-network
 
   events-db:
     image: postgres:17
@@ -32,13 +58,13 @@ services:
       timeout: 3s
       retries: 5
       start_period: 10s
+    networks:
+      - microservice-network
 
   orders-service:
     build:
       context: ./orders-service
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://orders-db:5432/${ORDERS_DB}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
@@ -49,13 +75,19 @@ services:
         condition: service_healthy
       events-service:
         condition: service_healthy
+    networks:
+      - microservice-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.orders.rule=PathPrefix(`/orders`)"
+      - "traefik.http.routers.orders.entrypoints=websecure"
+      - "traefik.http.routers.orders.tls=true"
+      - "traefik.http.services.orders.loadbalancer.server.port=8080"
 
   events-service:
     build:
       context: ./events-service
       dockerfile: Dockerfile
-    ports:
-      - "8081:8080"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://events-db:5432/${EVENTS_DB}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
@@ -69,7 +101,20 @@ services:
       timeout: 3s
       retries: 5
       start_period: 15s
+    networks:
+      - microservice-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.events.rule=PathPrefix(`/events`)"
+      - "traefik.http.routers.events.entrypoints=websecure"
+      - "traefik.http.routers.events.tls=true"
+      - "traefik.http.services.events.loadbalancer.server.port=8080"
 
 volumes:
   orders-db-data:
   events-db-data:
+
+networks:
+  microservice-network:
+    name: shared-network
+    driver: bridge

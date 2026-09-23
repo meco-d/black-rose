@@ -34,15 +34,15 @@ public class OrderService {
     }
 
     @Transactional
-    public Order placeOrder(Long eventId, OrderRequest request) {
-        RemoteEvent event = eventClient.getEvent(eventId);
+    public Order placeOrder(OrderRequest request) {
+        RemoteEvent event = eventClient.getEvent(request.eventId());
         int remaining = getTicketsRemaining(event);
         if (request.quantity() > remaining) {
-            throw new InsufficientCapacityException(eventId, remaining, request.quantity());
+            throw new InsufficientCapacityException(request.eventId(), remaining, request.quantity());
         }
 
         Order order = new Order();
-        order.setEventId(eventId);
+        order.setEventId(request.eventId());
         order.setCustomerEmail(request.customerEmail());
         order.setQuantity(request.quantity());
         order.setStatus(Status.CONFIRMED);
